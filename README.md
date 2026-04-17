@@ -87,16 +87,27 @@ Instead, later fine-tuning may reconnect style-relevant visual patterns, especia
 4. Fine-tune the erased model on the synthetic dataset.
 5. Evaluate whether Van Gogh-like style traits reappear.
 
-## Evaluation
+## Evaluation Setup
 
-We evaluated style relearning with two methods:
+We evaluated style relearning using two methods:
 
 1. Blind LLM evaluation  
-2. CLIP supplementary evaluation
+2. CLIP supplementary evaluation  
 
-### Blind LLM Evaluation
+LLM evaluator: **GPT-5.4 Thinking**
 
-We created blind comparison panels for each image index using three model outputs:
+The blind LLM evaluation prompt is available in:
+`GPT/prompts/blind_llm_evaluation_prompt.txt`
+
+The full evaluation workflow is available in:
+`notebook/style_relearning_evaluation.ipynb`
+
+---
+
+## Blind LLM Evaluation
+
+For each image index, we created a blind comparison panel using three model outputs:
+
 - original
 - unlearned
 - relearned_150
@@ -104,44 +115,95 @@ We created blind comparison panels for each image index using three model output
 The images were shuffled into left / middle / right positions so that the evaluator did not know which model produced which image.
 
 The LLM was asked to:
+
 - assign a style score to each image
 - identify which image looked most like Van Gogh
 - identify which image looked least like Van Gogh
 - judge whether the style was not relearned, partially relearned, or clearly relearned
 
-#### Main LLM results
+---
 
-- The original model was most frequently judged as the most Van Gogh-like: **26 / 30**
-- The unlearned model was most frequently judged as the least Van Gogh-like: **25 / 30**
-- Relearning status counts:
-  - clearly relearned: **18**
-  - partially relearned: **7**
-  - not relearned: **5**
-
-Average resolved style scores:
-- original: **4.83**
-- unlearned: **1.93**
-- relearned_150: **3.53**
-
-These results suggest that unlearning strongly suppresses Van Gogh-like style, while relearning restores a substantial portion of it.
-
-### CLIP Supplementary Evaluation
+## CLIP Supplementary Evaluation
 
 We also used CLIP as a supplementary metric.
 
 We measured:
+
 - similarity to Van Gogh-style prompts
 - similarity to generic painting prompts
 - style specificity = Van Gogh similarity − generic painting similarity
 
-The CLIP results showed the same overall trend:
+This metric does not directly measure style erasure by itself, but it provides additional evidence about whether the generated images align more strongly with Van Gogh-like style descriptions.
+
+---
+
+## Results
+
+### Blind LLM Results
+
+The blind LLM evaluation was completed for all 30 comparison panels.
+
+Main observations:
+
+- The original model was most frequently judged as the most Van Gogh-like: **26 / 30**
+- The unlearned model was most frequently judged as the least Van Gogh-like: **25 / 30**
+
+Relearning status counts:
+
+- clearly relearned: **18**
+- partially relearned: **7**
+- not relearned: **5**
+
+Average resolved style scores:
+
+- original: **4.83**
+- unlearned: **1.93**
+- relearned_150: **3.53**
+
+### CLIP Results
+
+The CLIP-based supplementary evaluation showed the same overall trend:
+
 - the original model had the strongest alignment with Van Gogh prompts
 - the unlearned model had the weakest alignment
 - the relearned_150 model recovered part of the lost style signal
 
-The specificity scores also suggest that the relearned model is not merely painterly in a generic sense, but regains some Van Gogh-specific alignment compared with the unlearned model.
+The style-specificity scores also suggested that the relearned model regained some Van Gogh-specific alignment compared with the unlearned model.
 
-See `style_relearning_evaluation.ipynb` for the full evaluation pipeline and detailed results.
+### Overall Conclusion
+
+Both the blind LLM evaluation and the CLIP supplementary evaluation support the same conclusion:
+
+**original > relearned_150 > unlearned**
+
+This suggests that unlearning removes Van Gogh-like stylistic traits effectively, while relearning restores them partially but not completely.
+
+---
+
+## Result Figures
+
+### Average LLM Style Scores
+![Average LLM Style Scores](data/images/llm_average_scores.png)
+
+### Relearning Status Distribution
+![Relearning Status Distribution](data/images/relearning_status_distribution.png)
+
+### CLIP Similarity to Van Gogh Prompts
+![CLIP Similarity](data/images/CLIP_Similarity_to_Van_Gogh_Prompts.png)
+
+### CLIP Van Gogh Specificity
+![CLIP Specificity](data/images/CLIP_Specificity.png)
+---
+
+## Result Files
+
+
+Main result files:
+
+- `data/results/evaluated_resolved_results.csv`
+- `data/results/clip_supplementary_results.csv`
+- `notebook/style_relearning_evaluation.ipynb`
+- `GPT/prompts/blind_llm_evaluation_prompt.txt`
 
 ### Conclusion
 
