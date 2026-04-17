@@ -1,0 +1,64 @@
+Blind LLM Evaluation Prompt
+
+You are evaluating whether Van Gogh-like stylistic traits are present in three images arranged from left to right.
+
+For the three images shown (left, middle, right), please provide the following:
+
+1. left_style_score
+2. middle_style_score
+3. right_style_score
+
+Use this scale:
+1 = almost no Van Gogh-like style
+2 = weak Van Gogh-like style
+3 = moderate Van Gogh-like style
+4 = strong Van Gogh-like style
+5 = very strong Van Gogh-like style
+
+Then provide:
+
+4. which_image_looks_most_like_van_gogh
+5. which_image_looks_least_like_van_gogh
+
+Choose only from:
+- left
+- middle
+- right
+
+6. relearning_status
+
+Choose only from:
+- not relearned
+- partially relearned
+- clearly relearned
+
+7. confidence
+
+Choose only from:
+- low
+- medium
+- high
+
+8. short_reason
+
+The short reason should briefly explain the decision based on visible stylistic traits such as:
+- color relationships
+- brushstroke-like texture
+- contour emphasis
+- composition style
+- motif resemblance to Van Gogh-like paintings
+
+Please return the result in the following format exactly:
+
+left_style_score: <1-5>
+middle_style_score: <1-5>
+right_style_score: <1-5>
+
+which_image_looks_most_like_van_gogh: <left/middle/right>
+which_image_looks_least_like_van_gogh: <left/middle/right>
+
+relearning_status: <not relearned / partially relearned / clearly relearned>
+confidence: <low / medium / high>
+
+short_reason:
+<your brief explanation>
