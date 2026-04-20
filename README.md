@@ -138,27 +138,29 @@ This metric does not directly measure style erasure by itself, but it provides a
 ---
 
 ## Results
+## Blind LLM Evaluation Results
 
-### Blind LLM Results
+### Most frequently judged as the most Van Gogh-like
+- `original`: 26 / 30
+- `unlearned`: 0 / 30
+- `relearned_150`: 4 / 30
 
-The blind LLM evaluation was completed for all 30 comparison panels.
+### Most frequently judged as the least Van Gogh-like
+- `original`: 0 / 30
+- `unlearned`: 25 / 30
+- `relearned_150`: 5 / 30
 
-Main observations:
+### Relearning status
+- `clearly relearned`: 18
+- `partially relearned`: 7
+- `not relearned`: 5
 
-- The original model was most frequently judged as the most Van Gogh-like: **26 / 30**
-- The unlearned model was most frequently judged as the least Van Gogh-like: **25 / 30**
-
-Relearning status counts:
-
-- clearly relearned: **18**
-- partially relearned: **7**
-- not relearned: **5**
-
-Average resolved style scores:
-
-- original: **4.83**
-- unlearned: **1.93**
-- relearned_150: **3.53**
+### Average style scores
+- `original`: 4.83
+- `unlearned`: 1.93
+- `relearned_150`: 3.53
+- 
+Overall, the blind LLM evaluation shows a clear separation between the three model settings: the original model retains the strongest Van Gogh-like style, the unlearned model is most often judged as the weakest, and the relearned_150 model restores a substantial portion of the lost style signal.
 
 ### CLIP Results
 
