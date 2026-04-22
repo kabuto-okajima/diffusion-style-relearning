@@ -176,21 +176,35 @@ Both the LLM evaluation and the CLIP supplementary evaluation support the same c
 This suggests that unlearning removes Van Gogh-like stylistic traits effectively, while relearning restores them partially, but not completely. In the updated 150 rerun, the recovery is visible but limited, and no samples were judged as clearly relearned.
 
 ---
-
 ## Result Figures
 
-### Average LLM Style Scores
-![Average LLM Style Scores](data/images/llm_average_scores.png)
+### LLM Evaluation
 
-### Relearning Status Distribution
-![Relearning Status Distribution](data/images/relearning_status_distribution.png)
+**Average LLM Style Scores by Model (150 rerun)**  
+This figure shows the average LLM style score for the original, unlearned, and relearned_150 models. The result follows the ordering:
 
-### CLIP Similarity to Van Gogh Prompts
-![CLIP Similarity](data/images/CLIP_Similarity_to_Van_Gogh_Prompts.png)
+**original > relearned_150 > unlearned**
 
-### CLIP Van Gogh Specificity
-![CLIP Specificity](data/images/CLIP_Specificity.png)
----
+![Average LLM Style Scores](data/images/llm_average_scores_150_rerun.png)
+
+**Relearning Status Distribution (150 rerun)**  
+This figure summarizes the LLM judgment of relearning outcomes across the 30 evaluated samples. Most samples are classified as **partially relearned**, while the remaining samples are classified as **not relearned**. No samples are classified as **clearly relearned** in this rerun.
+
+![Relearning Status Distribution](data/images/relearning_status_distribution_150_rerun.png)
+
+### CLIP Supplementary Evaluation
+
+**CLIP Similarity to Van Gogh Prompts (150 rerun)**  
+This figure shows the average CLIP similarity between each model output and Van Gogh-related prompts. The trend is consistent with the LLM evaluation:
+
+**original > relearned_150 > unlearned**
+
+![CLIP Similarity to Van Gogh Prompts](data/images/clip_similarity_van_gogh_150_rerun.png)
+
+**CLIP Van Gogh Specificity vs Generic Painting Prompts (150 rerun)**  
+This figure measures Van Gogh-specific alignment relative to generic painting prompts. The original model remains highest, the unlearned model is lowest, and the relearned_150 model shows partial recovery.
+
+![CLIP Van Gogh Specificity](data/images/clip_specificity_van_gogh_150_rerun.png)
 
 ## Result Files
 
