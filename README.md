@@ -208,11 +208,11 @@ This figure measures Van Gogh-specific alignment relative to generic painting pr
 
 ## Result Files
 
-
 Main result files:
 
-- `data/results/evaluated_resolved_results.csv`
-- `data/results/clip_supplementary_results.csv`
+- `data/results/llm_fixed_results_150.csv`
+- `data/results/llm_summary_150_rerun.csv`
+- `data/results/clip_supplementary_results_150_rerun.csv`
 - `notebook/style_relearning_evaluation.ipynb`
 - `GPT/prompts/blind_llm_evaluation_prompt.txt`
 
