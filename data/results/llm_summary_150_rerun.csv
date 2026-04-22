@@ -1,0 +1,4 @@
+metric,value
+original_mean_score,4.833333333333333
+unlearned_mean_score,1.9
+relearned_150_mean_score,3.0
