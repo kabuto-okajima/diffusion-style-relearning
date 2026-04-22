@@ -136,49 +136,44 @@ We measured:
 This metric does not directly measure style erasure by itself, but it provides additional evidence about whether the generated images align more strongly with Van Gogh-like style descriptions.
 
 ---
+## Updated 150 Rerun Result Summary
 
-## Results
-## Blind LLM Evaluation Results
+We re-evaluated the updated 150-version image set using LLM-based scoring and CLIP-based supplementary evaluation.
 
-### Most frequently judged as the most Van Gogh-like
-- `original`: 26 / 30
-- `unlearned`: 0 / 30
-- `relearned_150`: 4 / 30
+### LLM Evaluation
+Average style scores:
+- original: 4.83
+- unlearned: 1.90
+- relearned_150: 3.00
 
-### Most frequently judged as the least Van Gogh-like
-- `original`: 0 / 30
-- `unlearned`: 25 / 30
-- `relearned_150`: 5 / 30
+Relearning status:
+- partially relearned: 20
+- not relearned: 10
+- clearly relearned: 0
 
-### Relearning status
-- `clearly relearned`: 18
-- `partially relearned`: 7
-- `not relearned`: 5
-
-### Average style scores
-- `original`: 4.83
-- `unlearned`: 1.93
-- `relearned_150`: 3.53
-- 
-Overall, the blind LLM evaluation shows a clear separation between the three model settings: the original model retains the strongest Van Gogh-like style, the unlearned model is most often judged as the weakest, and the relearned_150 model restores a substantial portion of the lost style signal.
+This suggests that the relearned_150 model recovers part of the Van Gogh-like style, but the recovery is not strong enough to be considered clearly relearned in this rerun.
 
 ### CLIP Results
 
-The CLIP-based supplementary evaluation showed the same overall trend:
+The CLIP-based supplementary evaluation shows the same overall trend:
 
-- the original model had the strongest alignment with Van Gogh prompts
-- the unlearned model had the weakest alignment
-- the relearned_150 model recovered part of the lost style signal
+- the original model has the strongest alignment with Van Gogh prompts
+- the unlearned model has the weakest alignment
+- the relearned_150 model falls between original and unlearned
 
-The style-specificity scores also suggested that the relearned model regained some Van Gogh-specific alignment compared with the unlearned model.
-
-### Overall Conclusion
-
-Both the blind LLM evaluation and the CLIP supplementary evaluation support the same conclusion:
+The style-specificity scores show the same ordering:
 
 **original > relearned_150 > unlearned**
 
-This suggests that unlearning removes Van Gogh-like stylistic traits effectively, while relearning restores them partially but not completely.
+This suggests that the relearned_150 model recovers some Van Gogh-specific alignment compared with the unlearned model, but still remains below the original model.
+
+### Overall Conclusion
+
+Both the LLM evaluation and the CLIP supplementary evaluation support the same conclusion:
+
+**original > relearned_150 > unlearned**
+
+This suggests that unlearning removes Van Gogh-like stylistic traits effectively, while relearning restores them partially, but not completely. In the updated 150 rerun, the recovery is visible but limited, and no samples were judged as clearly relearned.
 
 ---
 
