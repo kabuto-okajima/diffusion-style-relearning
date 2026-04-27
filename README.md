@@ -7,7 +7,7 @@ This project focuses on whether an erased artistic style can re-emerge through s
 ## Research Question
 Can a diffusion model that has undergone style erasure relearn a Van Gogh-like style through downstream fine-tuning on synthetic, style-adjacent data that never explicitly names the artist?
 
-## High-level Overview
+## Pipeline Overview
 The project begins by applying ESD-x to Stable Diffusion 1.4 to erase the target style, Van Gogh, and obtain an unlearned model. 
 In parallel, GPT-5.4 is used to define ten semantically related concepts associated with the erased style and to generate prompts for each concept without explicitly using the artist name. 
 
@@ -68,24 +68,37 @@ flowchart LR
 Style erasure may not fully remove the internal representation of a style.  
 Instead, later fine-tuning may reconnect style-relevant visual patterns, especially when the fine-tuning data spans multiple motifs that jointly approximate the erased style manifold.
 
-## Dataset Plan
+## Synthetic Dataset
 - 10 concepts
 - 15 images per concept
 - 150 synthetic images total
 - Prompt design avoids artist names and explicit painting titles
 
-### Prompt Files
+### Prompt Resources
 - The GPT input prompt used to generate the 150-image dataset is stored at [GPT/prompts/van_gogh_150.txt](GPT/prompts/van_gogh_150.txt).
 - The generated 150 prompts are stored at [GPT/generated/md/van_gogh_speculative_finetune_prompts-150.md](GPT/generated/md/van_gogh_speculative_finetune_prompts-150.md).
 
 > Generated images are intentionally not stored in this repository in order to keep the repository lightweight and to avoid unnecessary redistribution of large synthetic image assets.
 
-## Method
+## Experimental Procedure
 1. Define ten style-adjacent concepts.
 2. Generate prompts for each concept with diversity in scene content and composition.
 3. Generate synthetic images from those prompts.
 4. Fine-tune the erased model on the synthetic dataset.
 5. Evaluate whether Van Gogh-like style traits reappear.
+
+
+
+## Results
+
+### Main Experiment
+Qualitative comparison across the original, unlearned, and relearned models shows that style recovery is observable for several prompts. 
+In these cases, the relearned model restores painterly color relationships, composition patterns, and motif-level features that were weakened after unlearning.
+This suggests that style erasure is not fully stable under downstream fine-tuning and that Van Gogh-like features can re-emerge through synthetic concept-based data.
+This qualitative pattern is also consistent with both the blind LLM evaluation and the CLIP-based supplementary analysis.
+
+![](/data/images/mini_comparison_grid_150.png)
+
 
 ## Evaluation Setup
 
@@ -94,23 +107,24 @@ We evaluated style relearning using two methods:
 1. Blind LLM evaluation  
 2. CLIP supplementary evaluation  
 
-LLM evaluator: **GPT-5.4 Thinking**
+LLM evaluator: **GPT-5.4**
 
 The blind LLM evaluation prompt is available in:
-`GPT/prompts/blind_llm_evaluation_prompt.txt`
+[GPT/prompts/blind_llm_evaluation_prompt.txt](GPT/prompts/blind_llm_evaluation_prompt.txt)
 
-The full evaluation workflow is available in:
-`notebook/style_relearning_evaluation.ipynb`
+The evaluation notebooks are available in:
+- [notebook/eval_llm.ipynb](notebook/eval_llm.ipynb)  
+- [notebook/eval_clip.ipynb](notebook/eval_clip.ipynb)
 
----
 
-## Blind LLM Evaluation
+### Blind LLM Evaluation
 
 For each image index, we created a blind comparison panel using three model outputs:
 
 - original
 - unlearned
 - relearned_150
+  (The `_150` suffix distinguishes this model from the separate 300-image relearning run.)
 
 The images were shuffled into left / middle / right positions so that the evaluator did not know which model produced which image.
 
@@ -121,9 +135,7 @@ The LLM was asked to:
 - identify which image looked least like Van Gogh
 - judge whether the style was not relearned, partially relearned, or clearly relearned
 
----
-
-## CLIP Supplementary Evaluation
+### CLIP Supplementary Evaluation
 
 We also used CLIP as a supplementary metric.
 
@@ -135,25 +147,30 @@ We measured:
 
 This metric does not directly measure style erasure by itself, but it provides additional evidence about whether the generated images align more strongly with Van Gogh-like style descriptions.
 
----
-## Updated 150 Rerun Result Summary
+## Evaluation Results
 
-We re-evaluated the updated 150-version image set using LLM-based scoring and CLIP-based supplementary evaluation.
+The visual evaluation figures are stored in [data/images/eval](data/images/eval).
 
-### LLM Evaluation
+### Blind LLM Evaluation Results
 Average style scores:
 - original: 4.83
 - unlearned: 1.90
 - relearned_150: 3.00
+
+The corresponding LLM evaluation results are available in [data/results/eval_llm.csv](data/results/eval_llm.csv).
+
+[data/images/eval/llm_average_style_scores.png](data/images/eval/llm_average_style_scores.png)
 
 Relearning status:
 - partially relearned: 20
 - not relearned: 10
 - clearly relearned: 0
 
-This suggests that the relearned_150 model recovers part of the Van Gogh-like style, but the recovery is not strong enough to be considered clearly relearned in this rerun.
+[data/images/eval/relearning_status_distribution.png](data/images/eval/relearning_status_distribution.png)
 
-### CLIP Results
+This suggests that the relearned_150 model recovers part of the Van Gogh-like style, but the recovery is not strong enough to be considered clearly relearned in this run.
+
+### CLIP Evaluation Results
 
 The CLIP-based supplementary evaluation shows the same overall trend:
 
@@ -161,90 +178,16 @@ The CLIP-based supplementary evaluation shows the same overall trend:
 - the unlearned model has the weakest alignment
 - the relearned_150 model falls between original and unlearned
 
-The style-specificity scores show the same ordering:
+The corresponding CLIP evaluation results are available in [data/results/eval_clip.csv](data/results/eval_clip.csv).
 
-**original > relearned_150 > unlearned**
+[data/images/eval/clip_similarity_van_gogh.png](data/images/eval/clip_similarity_van_gogh.png)
 
-This suggests that the relearned_150 model recovers some Van Gogh-specific alignment compared with the unlearned model, but still remains below the original model.
-
-### Overall Conclusion
-
-Both the LLM evaluation and the CLIP supplementary evaluation support the same conclusion:
-
-**original > relearned_150 > unlearned**
-
-This suggests that unlearning removes Van Gogh-like stylistic traits effectively, while relearning restores them partially, but not completely. In the updated 150 rerun, the recovery is visible but limited, and no samples were judged as clearly relearned.
-
----
-## Result Figures
-
-### LLM Evaluation
-
-**Average LLM Style Scores by Model (150 rerun)**  
-This figure shows the average LLM style score for the original, unlearned, and relearned_150 models. The result follows the ordering:
-
-**original > relearned_150 > unlearned**
-
-![Average LLM Style Scores](data/images/llm_average_scores_150_rerun.png)
-
-**Relearning Status Distribution (150 rerun)**  
-This figure summarizes the LLM judgment of relearning outcomes across the 30 evaluated samples. Most samples are classified as **partially relearned**, while the remaining samples are classified as **not relearned**. No samples are classified as **clearly relearned** in this rerun.
-
-![Relearning Status Distribution](data/images/relearning_status_distribution_150_rerun.png)
-
-### CLIP Supplementary Evaluation
-
-**CLIP Similarity to Van Gogh Prompts (150 rerun)**  
-This figure shows the average CLIP similarity between each model output and Van Gogh-related prompts. The trend is consistent with the LLM evaluation:
-
-**original > relearned_150 > unlearned**
-
-![CLIP Similarity to Van Gogh Prompts](data/images/clip_similarity_van_gogh_150_rerun.png)
-
-**CLIP Van Gogh Specificity vs Generic Painting Prompts (150 rerun)**  
+**CLIP Van Gogh Specificity vs Generic Painting Prompts:**  
 This figure measures Van Gogh-specific alignment relative to generic painting prompts. The original model remains highest, the unlearned model is lowest, and the relearned_150 model shows partial recovery.
 
-![CLIP Van Gogh Specificity](data/images/clip_specificity_van_gogh_150_rerun.png)
+[data/images/eval/clip_specificity_van_gogh.png](data/images/eval/clip_specificity_van_gogh.png)
 
-## Result Files
-
-Main result files:
-
-- `data/results/llm_fixed_results_150.csv`
-- `data/results/llm_summary_150_rerun.csv`
-- `data/results/clip_supplementary_results_150_rerun.csv`
-- `notebook/style_relearning_evaluation.ipynb`
-- `GPT/prompts/blind_llm_evaluation_prompt.txt`
-
-### Conclusion
-
-Both the blind LLM evaluation and the CLIP supplementary evaluation support the same conclusion:
-
-**original > relearned_150 > unlearned**
-
-This suggests that style unlearning removes Van Gogh-like stylistic traits effectively, while relearning restores them partially but not completely.
-
-## Risks
-- Prompts may collapse into repeated composition templates
-- Generated images may drift toward photographic or cinematic outputs
-- Fine-tuning may recover only a narrow substyle rather than the broader target style
-
-> These risks were observed during early prompt generation. The first two were mitigated by revising the GPT prompt design, while the third remains an open concern for evaluation..
-
-## Expected Outcome
-A compact experimental study showing whether style erasure is stable under indirect downstream fine-tuning, and which kinds of synthetic concept-based data are most likely to trigger style recovery.
-
-
-
-# Results
-
-## Main Experiment
-Qualitative comparison across the original, unlearned, and relearned models shows that style recovery is observable for several prompts. In these cases, the relearned model restores painterly color relationships, composition patterns, and motif-level features that were weakened after unlearning. This suggests that style erasure is not fully stable under downstream fine-tuning and that Van Gogh-like features can re-emerge through synthetic concept-based data.
-
-![](/data/images/mini_comparison_grid_150.png)
-
-
-## Supplementary Observation
+### Supplementary Comparison with the 300-Image Dataset
 We have also generated a 300-image synthetic dataset under the same experimental setting.
 However, comparison with the 150-image version suggests that the 150-image dataset may induce stronger Van Gogh-like style recovery in several example prompts.
 Since the two datasets were generated from different GPT sessions, this is included here as a supplementary observation rather than a controlled conclusion about dataset size.
@@ -253,8 +196,14 @@ This may indicate that dataset quality and style consistency matter more than ra
 In the qualitative comparison, the 150-image dataset appeared to recover color relationships, composition, and motif-level style cues more consistently than the 300-image dataset.
 This suggests that adding more images does not necessarily help if the additional synthetic data is less coherent or less style-aligned.
 
+## Risks
+- Prompts may collapse into repeated composition templates
+- Generated images may drift toward photographic or cinematic outputs
+- Fine-tuning may recover only a narrow substyle rather than the broader target style
+
+> These risks were observed during early prompt generation. The first two were mitigated by revising the GPT prompt design, while the third remains an open concern for evaluation..
 
 
-# Reference
+## Reference
 - https://openaccess.thecvf.com/content/ICCV2023/papers/Gandikota_Erasing_Concepts_from_Diffusion_Models_ICCV_2023_paper.pdf
 - https://openaccess.thecvf.com/content/CVPR2025/papers/George_The_Illusion_of_Unlearning_The_Unstable_Nature_of_Machine_Unlearning_CVPR_2025_paper.pdf
